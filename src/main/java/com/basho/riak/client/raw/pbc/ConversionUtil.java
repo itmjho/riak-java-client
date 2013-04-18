@@ -236,6 +236,11 @@ public final class ConversionUtil {
             requestMeta.ifNotModified(storeMeta.getIfNotModified());
         }
 
+        //Todo need to add ifMatch to RequestMeta
+        /*if (storeMeta.hasIfMatch()) {
+            requestMeta.ifMatch(storeMeta.getIfMatch());
+        } */
+
         return requestMeta;
     }
 

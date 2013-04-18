@@ -34,6 +34,7 @@ public class StoreMeta {
     private final Boolean returnHead;
     private final Boolean ifNoneMatch;
     private final Boolean ifNotModified;
+    private final Boolean ifMatch;
     // these two are HTTP API specific for ifNoneMatch and ifNotModified
     // which are different to the PB options of the same name
     private String[] etags;
@@ -129,6 +130,39 @@ public class StoreMeta {
         this.returnHead = returnHead;
         this.ifNoneMatch = ifNoneMatch;
         this.ifNotModified = ifNotModified;
+        this.ifMatch = false;
+    }
+
+    /**
+     * Create a StoreMeta, accepts <code>null</code>s for any parameter
+     *
+     * @param w
+     *            the write quorum for a store operation
+     * @param dw
+     *            the durable write quorum for a store operation
+     * @param pw
+     *            the primary write quorum
+     * @param returnBody
+     *            should the store operation return the new data item and its
+     *            meta data
+     * @param returnHead
+     *            should the store operation return only the meta data
+     * @param ifNoneMatch
+     *            only store if bucket/key does not exist
+     * @param ifNotModified
+     *            only store is the vclock supplied on store matches the vclock
+     *            in Riak
+     */
+    public StoreMeta(Quorum w, Quorum dw, Quorum pw, Boolean returnBody, Boolean returnHead, Boolean ifNoneMatch,
+                     Boolean ifNotModified, Boolean ifMatch) {
+        this.w = w;
+        this.dw = dw;
+        this.pw = pw;
+        this.returnBody = returnBody;
+        this.returnHead = returnHead;
+        this.ifNoneMatch = ifNoneMatch;
+        this.ifNotModified = ifNotModified;
+        this.ifMatch = ifMatch;
     }
 
     /**
@@ -224,6 +258,32 @@ public class StoreMeta {
         return hasIfNoneMatch() && ifNoneMatch;
     }
 
+
+    /**
+     * Has the ifMatch parameter been set?
+     *
+     * @return <code>true</code> if ifMatch parameter is set,
+     *         <code>false</code> otherwise
+     */
+    public boolean hasIfMatch() {
+        return ifMatch != null;
+    }
+
+    /**
+     * Get the value of the ifMatch parameter
+     *
+     * @return the ifMatch or <code>null</code> if not set.
+     */
+    public Boolean getIfMatch() {
+        return ifMatch;
+    }
+
+    /**
+     * @return true if hasIfMatch && getIfMatch
+     */
+    public boolean isIfMatch() {
+        return hasIfMatch() && ifNoneMatch;
+    }
     /**
      * Has the ifNotModified parameter been set?
      * 
@@ -335,9 +395,10 @@ public class StoreMeta {
         private Boolean returnHead;
         private Boolean ifNotModified;
         private Boolean ifNoneMatch;
+        private Boolean ifMatch;
 
         public StoreMeta build() {
-            return new StoreMeta(w, dw, pw, returnBody, returnHead, ifNoneMatch, ifNotModified);
+            return new StoreMeta(w, dw, pw, returnBody, returnHead, ifNoneMatch, ifNotModified, ifMatch);
         }
 
         public Builder w(int w) {
@@ -402,6 +463,11 @@ public class StoreMeta {
 
         public Builder ifNoneMatch(boolean ifNoneMatch) {
             this.ifNoneMatch = ifNoneMatch;
+            return this;
+        }
+
+        public Builder ifMatch(boolean ifMatch) {
+            this.ifMatch = ifMatch;
             return this;
         }
     }

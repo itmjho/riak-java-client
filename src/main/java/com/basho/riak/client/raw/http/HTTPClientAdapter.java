@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.basho.riak.client.http.RiakConfig;
+import com.basho.riak.client.raw.*;
 import org.apache.http.HttpStatus;
 
 import com.basho.riak.client.IRiakObject;
@@ -40,14 +41,6 @@ import com.basho.riak.client.http.response.WithBodyResponse;
 import com.basho.riak.client.query.MapReduceResult;
 import com.basho.riak.client.query.NodeStats;
 import com.basho.riak.client.query.WalkResult;
-import com.basho.riak.client.raw.DeleteMeta;
-import com.basho.riak.client.raw.FetchMeta;
-import com.basho.riak.client.raw.MatchFoundException;
-import com.basho.riak.client.raw.ModifiedException;
-import com.basho.riak.client.raw.RawClient;
-import com.basho.riak.client.raw.RiakResponse;
-import com.basho.riak.client.raw.StoreMeta;
-import com.basho.riak.client.raw.Transport;
 import com.basho.riak.client.raw.query.LinkWalkSpec;
 import com.basho.riak.client.raw.query.MapReduceSpec;
 import com.basho.riak.client.raw.query.MapReduceTimeoutException;
@@ -235,6 +228,8 @@ public class HTTPClientAdapter implements RawClient {
                     throw new MatchFoundException();
                 } else if (storeMeta.hasIfNotModified() && storeMeta.getIfNotModified()) {
                     throw new ModifiedException();
+                } else if (storeMeta.hasIfMatch() && storeMeta.getIfMatch()) {
+                    throw new MatchNotFoundException();
                 }
             }
             throw new IOException(resp.getStatusCode() + " " + resp.getBodyAsString());

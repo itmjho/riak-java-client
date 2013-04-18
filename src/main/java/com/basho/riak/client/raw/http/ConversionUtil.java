@@ -224,6 +224,10 @@ public final class ConversionUtil {
             requestMeta.setIfNoneMatch(storeMeta.getEtags());
         }
 
+        if (storeMeta.hasIfMatch() && storeMeta.getIfMatch()) {
+            requestMeta.setIfMatch(storeMeta.getEtags());
+        }
+
         if (storeMeta.hasIfNotModified() && storeMeta.getIfNotModified()) {
             requestMeta.setIfUnmodifiedSince(storeMeta.getLastModified());
         }
